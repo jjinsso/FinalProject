@@ -12,11 +12,10 @@
 				<div class="con_con">
 					<!--회원가입 영역-->
 					<div class="Step">
-						<span class="off">1</span>
-						<span class="on"><span class="num">2</span><span class="on_tit">개인 정보 입력</span></span>
+						<span class="on"><span class="num">1</span><span class="on_tit">개인 정보 수정</span></span>
 						<span class="off">2</span>
 					</div>
-					<h4 class="h4 mt15">회원정보 입력</h4>
+					<h4 class="h4 mt15">회원정보 수정</h4>
 					<p class="tit_tip">
 						 회원정보는 개인정보처리방침에 따라 안전하게 보호되며 회원님의 동의 없이 공개 또는 제3자에게 제공되지 않습니다.
 					</p>
@@ -38,9 +37,7 @@
 									<span class="mando">아이디</span>
 								</th>
 								<td>
-									<input type="text" class="w170">
-									<input type="button" class="btn_w" value="중복확인">
-									<span class="tip_info2">6~10자리 수, 영문 또는 숫자 로만 가능</span>
+									
 								</td>
 							</tr>
 							<tr>

@@ -16,7 +16,7 @@
 				<!--탭-->
 				<div class="tabarea">
 					<ul class="tabmenu">
-						<li class="choice">휴대전화 번호로  찾기</li>
+						<li class="choice">휴대전화번호로  찾기</li>
 						<li class="right">이메일주소로 찾기</li> 
 					</ul>
 				</div>
@@ -59,8 +59,9 @@
 					</div>
 		
 				</form>
+				
 	
-				<!-- 비밀번호 찾기 -->
+				<!-- 아이디찾기 -->
 				<form action="idFindRslt.jsp" method="get" class="findForm02 off" >
 					<div class="login_box">
 						<ul class="find_inp">
