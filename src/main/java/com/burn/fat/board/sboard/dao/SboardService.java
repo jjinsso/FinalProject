@@ -25,7 +25,7 @@ public class SboardService {
 		return list;
 	}
 
-	public void insertBbs(SboardBean bean) {
+	public void insertSboard(SboardBean bean) {
 		dao.insertSboard(bean);
 	}
 
@@ -55,6 +55,7 @@ public class SboardService {
 		
 		return dao.getSboardListSearch(m);
 	}
+
 
 	
 

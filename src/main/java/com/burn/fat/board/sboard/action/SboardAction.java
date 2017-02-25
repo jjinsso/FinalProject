@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.burn.fat.board.sboard.dao.SboardService;
@@ -27,11 +28,11 @@ public class SboardAction {
 	
 	@Autowired
 	private SboardService service;
-	private String saveFolder = "";
+	private String saveFolder = "C:/upload";
 	
 	@RequestMapping(value="/sboardWrite.brn")
 	public String sboardwrite(){
-		return "html_community/sboard/sboardWrite"; //html_community/sboard 폴더의 sboardWrite.jsp 뷰 페이지가 실행
+		return "sboard/sboardWrite"; //html_community/sboard 폴더의 sboardWrite.jsp 뷰 페이지가 실행
 	}
 	
 	/* 자료실 저장 */
@@ -39,9 +40,9 @@ public class SboardAction {
 	//(window-> Preferencs -> workspce -> 
 	// Refresh using native hooks or polling 체크)
 	//  하고 5초 정도 지난 뒤 확인하세요
-	@RequestMapping(value="/sboardwrite_ok.nhn",
+	@RequestMapping(value="/sboardwrite_ok.brn",
 			method=RequestMethod.POST)
-	public ModelAndView bbs_write_ok(
+	public ModelAndView sboardwrite_ok(
 			HttpServletRequest request,
 			HttpServletResponse response) throws Exception{
 		
@@ -52,8 +53,12 @@ public class SboardAction {
 		multi=new MultipartRequest(request,saveFolder,fileSize,"UTF-8");
 		
 		HttpSession session = request.getSession();
-		
+		PrintWriter out = response.getWriter();
 		String mem_id=(String) session.getAttribute("mem_id");
+		if(mem_id==null)
+			out.print("<script>alert('로그인 후 이용할 수 있습니다.')</script>");
+		
+		
 		String s_sj=multi.getParameter("s_sj").trim();
 		String s_ct= multi.getParameter("s_ct").trim();
 		
@@ -102,24 +107,21 @@ public class SboardAction {
             System.out.println("homedir / refileName  = " + homedir+"/"+
             refileName);
             
-            if(fileExtension.equals("jpg") ||fileExtension.equals("png")||fileExtension.equals("gif") ){
-            	bean.setS_gl(fileDBName);
-            }else
-            //바뀐 파일명으로  저장
+           
             bean.setS_fl(fileDBName);
 		}
 		bean.setMem_id(mem_id);
 		bean.setS_sj(s_sj);
 		bean.setS_ct(s_ct);
 		
-		service.insertBbs(bean); //저장메서드 호출
-
+		service.insertSboard(bean); //저장메서드 호출
+		
 		//자신이 쓴 글 세부 페이지로 보내는 방법 생각하기
-		response.sendRedirect("sboardcont.brn");
+		response.sendRedirect("sboardcont.brn?s_no="+bean.getS_no()+"&state=cont");
 		return null;
 	}
 	
-	@RequestMapping("/sboardlist.brn")
+	@RequestMapping("/sboardList.brn")
 	public ModelAndView sboardList(HttpServletRequest request, HttpServletResponse response)throws Exception{
 	    
 			int page = 1;
@@ -127,7 +129,7 @@ public class SboardAction {
 	 		HttpSession session = request.getSession();
 
 	 		if(request.getParameter("page") != null){
-						page=Integer.parseInt(request.getParameter("page"));
+				page=Integer.parseInt(request.getParameter("page"));
 			}
 	 		if(session.getAttribute("limit") != null){
 	 			limit=(Integer) session.getAttribute("limit");
@@ -160,7 +162,7 @@ public class SboardAction {
 					
 			List<SboardBean> slist = service.getSboardList(m); 
 
-				ModelAndView model=new ModelAndView("html_community/sboard/sboardList");
+				ModelAndView model=new ModelAndView("sboard/sboardList");
 				model.addObject("page", page);
 				model.addObject("limit", limit);
 				model.addObject("maxpage", maxpage);
@@ -175,9 +177,8 @@ public class SboardAction {
 	@RequestMapping(value="/sboardcont.brn")
 	public ModelAndView sboardcont(
 			HttpServletRequest request,
-			HttpServletResponse response) throws Exception{
+			HttpServletResponse response,@RequestParam(value="s_no", required=true) int s_no) throws Exception{
 		
-		int num=Integer.parseInt(request.getParameter("s_no"));
 		
 		int page=1;
 		if(request.getParameter("page") != null){
@@ -188,22 +189,22 @@ public class SboardAction {
 		
 		
 		//번호를 기준으로 DB 내용을 가져옵니다.
-		SboardBean bean=this.service.getSboardCont(num);
+		SboardBean bean=this.service.getSboardCont(s_no);
 		
 		ModelAndView contM=new ModelAndView();
 		
 		if(state.equals("cont")){//내용보기
-			service.sboardHit(num);//조회수 증가
-			contM.setViewName("html_community/sboard/sboardView");
+			service.sboardHit(s_no);//조회수 증가
+			contM.setViewName("sboard/sboardView");
 			
 			//글내용 중 엔터키 친부분을 다음줄로 개행 처리
 			String s_ct=bean.getS_ct().replace("\n","<br/>");
 			
 			contM.addObject("s_ct",s_ct);
 		}else if(state.equals("edit")){
-			contM.setViewName("html_community/sboard/sboardEdit");
+			contM.setViewName("sboard/sboardEdit");
 		}else if(state.equals("del")){//삭제일때
-			contM.setViewName("html_community/sboard/sboard");
+			contM.setViewName("sboard/sboard");
 		}
 		contM.addObject("sbean",bean);
 		contM.addObject("page",page);
@@ -266,7 +267,7 @@ public class SboardAction {
    			int index = fileName.lastIndexOf(".");
    			String fileExtension = fileName.substring(index + 1);
    			/****확장자 구하기 끝 ***/
-   			String refileName="bbs"+year+month+date+random+"."+
+   			String refileName="sboard"+year+month+date+random+"."+
    					fileExtension;//새로운 파일명을 저장
             String fileDBName="/"+year+"-"+month+"-"+date+"/"+refileName;
             
@@ -327,8 +328,8 @@ public class SboardAction {
 	<Connector connectionTimeout="20000" port="8088" protocol="HTTP/1.1" 
 		     redirectPort="8443" URIEncoding="UTF-8"/>*/
 	/* 자료실 검색 목록 */
-	@RequestMapping(value="/sboardfind_ok.nhn", method=RequestMethod.GET)
-	public ModelAndView bbs_find_ok(
+	@RequestMapping(value="/sboardfind_ok.brn", method=RequestMethod.GET)
+	public ModelAndView sboardfind_ok(
 			HttpServletRequest request,
 			HttpServletResponse response
 			) throws Exception{
@@ -353,6 +354,7 @@ public class SboardAction {
 			
 			Map<String, Object> m = new HashMap<String, Object>();
 			m.put("page", page);
+			m.put("limit", limit);
 			m.put("find_field", find_field);
 			m.put("find_name", "%"+find_name+"%");			
 			System.out.println(find_field);
@@ -376,7 +378,7 @@ public class SboardAction {
 			 
 			List<SboardBean> slist = service.getSboardListSearch(m); 
 			
-			ModelAndView model=new ModelAndView("bbs/bbs_find");
+			ModelAndView model=new ModelAndView("sboard/sboardfind");
 			model.addObject("find_name",find_name);
 			model.addObject("find_field",find_field);			
 			model.addObject("page", page);
@@ -389,7 +391,7 @@ public class SboardAction {
 			return model;	
 			//return null;
 	}
-	@RequestMapping(value="/find_order_date.nhn")
+	@RequestMapping(value="/find_order_date.brn")
 	public ModelAndView find_order_date(HttpServletRequest request,
 			HttpServletResponse response) throws Exception{
 			
@@ -433,7 +435,7 @@ public class SboardAction {
 			 
 			List<SboardBean> slist = service.getSboardListSearch(m);
 			
-			ModelAndView model=new ModelAndView("bbs/bbs_find");
+			ModelAndView model=new ModelAndView("sboard/sboardView");
 			model.addObject("find_name",find_name);
 			model.addObject("find_field",find_field);			
 			model.addObject("page", page);

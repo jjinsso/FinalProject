@@ -12,7 +12,6 @@ public class SboardBean {
 	private String s_sj;
 	private String s_ct;
 	private String s_fl;
-	private String s_gl;
 	private int s_rc;
 	private Date s_dt;
 	private int s_lk;
@@ -46,12 +45,6 @@ public class SboardBean {
 	}
 	public void setS_fl(String s_fl) {
 		this.s_fl = s_fl;
-	}
-	public String getS_gl() {
-		return s_gl;
-	}
-	public void setS_gl(String s_gl) {
-		this.s_gl = s_gl;
 	}
 	public int getS_rc() {
 		return s_rc;

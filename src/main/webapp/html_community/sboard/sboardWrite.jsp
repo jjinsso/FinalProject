@@ -13,6 +13,7 @@
 			
 			<h4>글쓰기</h4>
 		
+			<form action="sboardwrite_ok.brn" method="post" enctype="multipart/form-data">
 			<!--게시글-->
 			<div class="Board_write"> 
 				<!--제목-->
@@ -42,11 +43,13 @@
 					<a href="boardWrite.jsp" class="white">목록</a>
 				</div>
 				<div class="fr">
-					<a href="boardList.jsp" class="black">등록</a>
+					<a href="#" class="black" onclick="javascript:$('form').submit()">등록</a>
 				</div>
 			</div>
 			<!--//버튼영역--> 
+			</form>
 		</div>
+		
 		<!--//게시글영역-->
 	<!-- 서브컨텐츠 영역 END -->
 	</div>

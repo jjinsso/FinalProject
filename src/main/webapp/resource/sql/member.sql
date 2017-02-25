@@ -1,34 +1,35 @@
 create table member(   
-	mem_no		number constraint member_memno_pk primary key,--È¸¿ø ¹øÈ£
+	mem_no		number constraint member_memno_pk primary key,--È¸ï¿½ï¿½ ï¿½ï¿½È£
     mem_id      varchar2(50) ,
     mem_pw      varchar2(50),     
-    mem_nm      varchar2(100),--ÀÌ¸§
-    mem_sx		number, --¼ºº°(³² :1, ¿© :2)
-    mem_bd		date, --»ý³â¿ùÀÏ
-    mem_hp      varchar2(12),--ÇÚµåÆù¹øÈ£
-    mem_tel		varchar2(12),--ÀüÈ­¹øÈ£
-    mem_zc      number(5),--¿ìÆí¹øÈ£
-    mem_add1    varchar2(300),--ÁÖ¼Ò
-    mem_add2	varchar2(100),--»ó¼¼ÁÖ¼Ò
-    mem_ma      varchar2(100),--ÀÌ¸ÞÀÏ
+    mem_nm      varchar2(100),--ï¿½Ì¸ï¿½
+    mem_sx		number, --ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ :1, ï¿½ï¿½ :2)
+    mem_bd		date, --ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    mem_hp      varchar2(12),--ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½È£
+    mem_tel		varchar2(12),--ï¿½ï¿½È­ï¿½ï¿½È£
+    mem_zc      number(5),--ï¿½ï¿½ï¿½ï¿½ï¿½È£
+    mem_add1    varchar2(300),--ï¿½Ö¼ï¿½
+    mem_add2	varchar2(100),--ï¿½ï¿½ï¿½Ö¼ï¿½
+    mem_ma      varchar2(100),--ï¿½Ì¸ï¿½ï¿½ï¿½
     mem_h		number(3,3),--Å°
-    mem_w		number(3,3),--¸ö¹«°Ô
-    mem_jd		date default sysdate,--°¡ÀÔ³¯Â¥
-    mem_st		number default 0, --°¡ÀÔ»óÅÂ(°¡ÀÔ:0, Å»Åð:1)
-    mem_dd		date default sysdate,--Å»Åð³¯Â¥
-    mem_rs1		varchar2(300),--Å»Åð»çÀ¯1
-    mem_rs2		varchar2(300)  --Å»Åð»çÀ¯2
+    mem_w		number(3,3),--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    mem_jd		date default sysdate,--ï¿½ï¿½ï¿½Ô³ï¿½Â¥
+    mem_st		number default 0, --ï¿½ï¿½ï¿½Ô»ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½:0, Å»ï¿½ï¿½:1)
+    mem_dd		date default sysdate,--Å»ï¿½ï¿½Â¥
+    mem_rs1		varchar2(300),--Å»ï¿½ï¿½ï¿½ï¿½ï¿½1
+    mem_rs2		varchar2(300)  --Å»ï¿½ï¿½ï¿½ï¿½ï¿½2
 )
 
+insert into member values(1, 'dang','1234','ë¬¸ê°€í˜•',2,sysdate,'01085884166',null,16910,null,null,null,null,null,null,null,null,null,null);
 create table fboard(
-	f_no		number constraint fb_fno_PK primary key,--±Û¹øÈ£
-	mem_no		number,--ÀÛ¼ºÀÚ È¸¿ø ¹øÈ£
-	f_sj		varchar2(100) not null,--±Û Á¦¸ñ
-	f_ct		clob not null,--±Û ³»¿ë
-	f_fl		varchar2(1024),--¾÷·Îµå ÆÄÀÏ °æ·Î
-	f_gl		varchar2(1024),--¾÷·Îµå ÀÌ¹ÌÁö °æ·Î
-	f_rc		number default 0,--Á¶È¸¼ö
-	f_dt		date default sysdate--ÀÛ¼º½Ã°£
+	f_no		number constraint fb_fno_PK primary key,--ï¿½Û¹ï¿½È£
+	mem_no		number,--ï¿½Û¼ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½È£
+	f_sj		varchar2(100) not null,--ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	f_ct		clob not null,--ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	f_fl		varchar2(1024),--ï¿½ï¿½ï¿½Îµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+	f_gl		varchar2(1024),--ï¿½ï¿½ï¿½Îµï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+	f_rc		number default 0,--ï¿½ï¿½È¸ï¿½ï¿½
+	f_dt		date default sysdate--ï¿½Û¼ï¿½ï¿½Ã°ï¿½
 )
 
 create table fcomment(

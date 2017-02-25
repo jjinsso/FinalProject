@@ -48,7 +48,7 @@
 						<c:forEach items="${slist }" var="list">
 						<tr>
 							<td>${list.s_no }</td>
-							<td><a href="sboardcont.brn?num=${list.s_no}&page=${page}&state=cont">${list.s_sj }</a></td>
+							<td><a href="sboardcont.brn?s_no=${list.s_no}&page=${page}&state=cont">${list.s_sj }</a></td>
 							<td>${list.mem_id }</td>
 							<td>${list.s_dt }</td>
 							<td>${list.s_rc }</td>
@@ -107,9 +107,9 @@
 				<p class="col">
 					<label for="srch_sel01" class="sc_txt">검색영역</label>
 					<select class="w180 mr10" id="srch_sel01" name="find_field">
-							<option value="bbs_name">작성자</option>
-					       <option value="bbs_subject">글제목</option>
-					       <option value="bbs_content">글내용</option>
+							<option value="mem_id">작성자</option>
+					       <option value="s_sj">글제목</option>
+					       <option value="s_ct">글내용</option>
 					</select>
 					<label for="srch_txt" class="dnone"></label><input type="text" name="find_name" id="srch_txt" class="w280 mr10" value="검색어를 입력하세요"/>
 					<input type="submit" class="btn_srch" value="검색" />
@@ -118,6 +118,34 @@
 			</div>
 			</form>
 			<!--//검색영역-->
+			<script>
+			$(function(){
+				
+				$("#viewcount").val("${limit}").prop("selected", true);
+				
+				$('#viewcount').change(function(){
+					var limit = $('#viewcount option:selected').val();
+					   $.ajax({
+						   type: "post",
+						   data : {"limit" : limit},
+						   url : "sboardList.brn",
+						   cache : false,
+						   success : function(data){
+							   $('body').html(data);
+							   $('body > meta').remove();
+							   $('body > title').remove();
+							   $('body > link').remove();
+							   $('body > script').remove();
+							   
+						   },
+						   error : function(data, status){
+							   alert('limit')
+						   },
+						   headers : {"cache-control": "no-cache","pragma": "no-cache"}
+					   })
+				})
+			})
+			</script>
 			<div id="sboardview" style="padding-left: 300px;">
 			<select id="viewcount">
 				<option value="20">20줄보기</option>

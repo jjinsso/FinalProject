@@ -4,23 +4,25 @@
 <mapper namespace="Sboard">
 
 	<!-- 후기 게시판 글 저장 -->
-    <insert id="insertSboard" parameterType="java.util.Map">
-      insert into sboard 
-          (s_no, s.mem_no, s_sj,   s_ct, 
-           s_fl, s_gl, s_rc, s_dt,
-           s_lk, s_lkno)
-      values(s_no_seq.nextval,#{mem_no},#{bean.s_sj},to_clob(#{bean.s_ct}),
-             #{bean.s_fl, jdbcType=VARCHAR}, #{bean.s_gl, jdbcType=VARCHAR},
-             ,0,sysdate,0,0)
+    <insert id="insertSboard" parameterType="sboardbean">
+    	<selectKey keyProperty="s_no" resultType="int" order="BEFORE">
+    		select s_no_seq.nextval from dual
+    	</selectKey>
+     insert into sboard 
+          (s_no, mem_no, s_sj,   s_ct, 
+           s_fl,  s_rc, s_dt,
+           s_lk)
+      values(#{s_no},
+      (select mem_no 
+    	from member
+    	where mem_id=#{mem_id}),#{s_sj},'힘들구만',
+             #{s_fl, jdbcType=VARCHAR},0,sysdate,0)
+             
     </insert>
     
- 
+ 	
     <!-- 후기게시판 멤버 아이디로 멤버 번호 가져오기 -->
-    <select id="getmem_no" parameterType="String" resultType="int">
-    	select mem_no 
-    	from member
-    	where #{mem_id}
-    </select>
+    
     <!-- 자료실 총 게시물 수 -->
     <select id="sboardcount" resultType="int" >
       select count(*) from sboard 
@@ -32,7 +34,7 @@
 		select * 
 		from 
 		  (select rownum rnum, s_no, mem_id,   s_sj, 
-		   s_ct, s_fl,  s_gl,     s_rc,
+		   s_ct, s_fl,   s_rc,
 		   s_dt,  s_lk,   S_lkno 
 		   from  
 	  	      (select * from sboardlist 
@@ -67,12 +69,12 @@
     	 </where>
     </select>
     
-    <select id="sboardlistsearch"  parameterType="java.util.Map"  resultType="bbsbean">
+    <select id="sboardlistsearch"  parameterType="java.util.Map"  resultType="sboardbean">
 	    
 		select * 
 		from 
 		  (select rownum rnum, s_no, mem_id,   s_sj, 
-		   s_ct, s_fl,  s_gl,     s_rc,
+		   s_ct, s_fl,      s_rc,
 		   s_dt,  s_lk,   S_lkno 
 		   from  
 	  	      (select * from sboardlist 
@@ -100,41 +102,41 @@
 		
 	</select>    
 	
-    <select id="date_order"  parameterType="java.util.Map"  resultType="bbsbean">
+    <select id="date_order"  parameterType="java.util.Map"  resultType="sboardbean">
 	    
 		select * 
 		from 
-		  (select rownum rnum, bbs_num, bbs_name,   bbs_pass, 
-		   bbs_subject, bbs_content,  bbs_file,     bbs_re_ref,
-		   bbs_re_lev,  bbs_re_seq,   bbs_readcount,bbs_date 
+		  (select rownum rnum, s_no, mem_id,   s_sj, 
+		   s_ct, s_fl,     s_rc,
+		   s_dt,  s_lk,   S_lkno 
 		   from  
-	  	      (select * from bbs6 
+	  	       (select * from sboardlist 
 	  	      <!-- Mybatis 동적 SQL문  -->
 		<where>
-		<!-- 검색 조건 없는 경우 -->
-			<if test="find_field==''">
-			</if>
-				<!-- 검색 조건이 글쓴이인 경우 -->
-    	 	<if test="find_field=='bbs_name'">
-    	 		bbs_name like #{find_name}
+    	 	<!-- 검색조건이 없는 경우 -->
+    	 	<if test="find_field==''">
+    	 	</if>
+    	 	<!-- 검색 조건이 글쓴이인 경우 -->
+    	 	<if test="find_field=='mem_id'">
+    	 		mem_id like #{find_name} 
     	 	</if>
     	 	<!-- 검색 조건이 제목인 경우 -->
-    	 	<if test="find_field=='bbs_subject'">
-    	 		bbs_subject like #{find_name}
+    	 	<if test="find_field=='s_sj'">
+    	 		s_sj like #{find_name}
     	 	</if>
     	 	<!-- 검색 조건이 내용인 경우 -->
-    	 	<if test="find_field=='bbs_content'">
-    	 		bbs_content like #{find_name}
+    	 	<if test="find_field=='s_ct'">
+    	 		s_ct like #{find_name}
     	 	</if>
-		</where>
+    	 </where>
 	  	       order by 
 	  	     <choose>
-	  	       <when test="orderdate=='asc'"> bbs_date asc)) </when>
-	  	       <when test="orderdate=='desc'"> bbs_date desc)) </when>
-	  	       <otherwise> bbs_date desc)) </otherwise>
+	  	       <when test="orderdate=='asc'"> s_dt asc)) </when>
+	  	       <when test="orderdate=='desc'"> s_dt desc)) </when>
+	  	       <otherwise> s_dt desc)) </otherwise>
 	  	   </choose>    
 	  	   
-	   	where rnum &gt;= ((#{page}-1) * 10+1)  and rnum &lt;= (#{page} * 10)
+	   	where rnum &gt;= ((#{page}-1) * #{limit} +1)  and rnum &lt;= (#{page} * #{limit})
 		
 	</select>    
 	
@@ -186,26 +188,7 @@
       from   sboard 
       where  s_no=#{s_no}
     </delete>
-    
-    <!-- 답변글 레벨 증가 -->
-    <update id="bbs_Level" parameterType="bbsbean">
-        update bbs6 
-           set bbs_re_seq=bbs_re_seq+1
-		 where bbs_re_ref=#{bbs_re_ref}  and bbs_re_seq > #{bbs_re_seq}
-    </update>
-    
-    <!-- 답변글 저장 -->
-    <insert id="bbs_reply" parameterType="bbsbean">   
-       insert into bbs6( 
-              bbs_num, bbs_name,  bbs_subject,bbs_content,
-              bbs_pass,bbs_re_ref,bbs_re_lev, bbs_re_seq,
-              bbs_readcount,      bbs_date) 
-       values(
-              bbs6_num_seq.nextval,#{bbs_name},#{bbs_subject},
-              #{bbs_content},#{bbs_pass},#{bbs_re_ref},#{bbs_re_lev},
-              #{bbs_re_seq},0,sysdate)
-    </insert>
-    
+  
     
 </mapper>
 
