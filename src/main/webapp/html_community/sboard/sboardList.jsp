@@ -118,6 +118,18 @@
 			</div>
 			</form>
 			<!--//검색영역-->
+			<div id="sboardview" style="padding-left: 300px;">
+			<select id="viewcount">
+				<option value="20">20줄보기</option>
+				<option value="50">50줄보기</option>
+				<option value="100">100줄보기</option>
+			</select> 
+			</div>
+			<div class="btnB_area">
+				<div class="fr">
+					<a href="./sboardWrite.brn" class="black">글쓰기</a>
+				</div>
+			</div>
 		</div>
 		<!-- 서브컨텐츠 영역 END -->
 	</section>
