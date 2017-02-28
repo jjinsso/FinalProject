@@ -1,4 +1,5 @@
 $(function(){
+	
 	   if (window.sessionStorage) {
            var limit = sessionStorage.getItem('limit');
            $("#viewcount").val(limit).prop("selected", true);
@@ -14,17 +15,7 @@ function find_check(){
 	}
 		
 }
-function write_check(){
-	if($('#s_sj').val().trim()==''){
-		$('#s_sj').focus();
-		alert('제목을 입력해주세요');
-	}
-	if($('#s_ct').val().trim()==''){
-		$('#s_ct').focus();
-		alert('내용을 입력해주세요');
-	}
-	$('form').submit();
-}
+
 function delete_check(){
 	if (confirm("정말 삭제하시겠습니까??") == true){
 		var s_no = $("#s_no").val();
@@ -68,6 +59,8 @@ function scrap_ok(){
 		 headers : {"cache-control": "no-cache","pragma": "no-cache"}
 	})
 }
+
+
 function scomm_write(){
 
 	if( $('#scomm_ct').val().trim()==''){

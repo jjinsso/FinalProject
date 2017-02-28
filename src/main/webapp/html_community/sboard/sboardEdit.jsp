@@ -5,7 +5,7 @@
 <section class="sub_container">
 
 		<!-- 서브메뉴에 따라 Side Navigation을 다르게 부여해준다. -->	
-		<%@ include file="/inc/leftMenu_log.jsp" %>
+		<%@ include file="/inc/boardHeader.jsp" %>
 		
 		<!-- 서브컨텐츠 영역 START -->
 		<div class="subContent">

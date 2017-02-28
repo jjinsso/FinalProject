@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ include file="/inc/subHeader.jsp"%>
+<%@ include file="/inc/boardHeader.jsp"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!-- container Start : 헤더와 푸터를 제외한 실제 영역-->
@@ -59,7 +59,8 @@
 				<!--첨부파일-->
 				<div class="file_Area">
 					<ul class="addfile">
-						<li class="pdf"><a href="#">${sbean.s_fl }</a></li>
+						<li class="pdf"><a href="./resources/upload${sbean.s_fl}" 
+      						target="_blank">${sbean.s_fl }</a></li>
 					</ul>
 				</div>
 				<!--//첨부파일-->

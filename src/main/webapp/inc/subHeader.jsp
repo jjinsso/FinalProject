@@ -14,7 +14,6 @@
 <script src="/fat/resources/js/jquery.min.js"></script>
 <script src="/fat/resources/js/angular.js"></script>
 <script src="/fat/resources/js/common.js"></script>
-<script src="./resources/js/sboard.js"></script>
 
 </head>
 

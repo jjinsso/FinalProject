@@ -84,11 +84,15 @@
 .Board_write{ position:relative; clear:both; border-top:1px solid #666666; }
 .Board_write .board_tit{ margin:20px 0; padding-bottom:20px; background-repeat:no-repeat; font-size:21px; color:#232323; border-bottom:1px solid #666666; }
 .Board_write .board_tit input[type=text]{ width:100%; padding:10px; height:60px; line-height:40px; border:1px dotted #d0d0d0; letter-spacing:-0.5px; } 
-.Editor_Area{ width:100%; height:400px; display:block; clear:both; border:1px solid #d0d0d0; }
- 
+.Editor_Area{ width:100%; height:auto; display:block; clear:both; border:1px solid #d0d0d0; }
+.Editor_Area iframe{ width:100%; }
+#smart_editor2{ width:100% !important;}
 /*상세보기:내용보기*/
-.Post_Area{ position:relative; clear:both; padding:30px 10px; margin-bottom:10px; border-bottom:1px solid #e0e0e0; font-size:14px; color:#666666; line-height:150%  }
+.Post_Area{ position:relative; clear:both; padding:0 0; margin-bottom:10px; border-bottom:1px solid #e0e0e0; font-size:14px; color:#666666; line-height:150%  }
 .Post_Area pre{ white-space:pre-wrap; }
+.Post_Area > * { margin:auto;  padding:auto;  border:auto;  font-size:auto;  vertical-align:auto;  background:auto;  
+	font-family:auto; color:auto; 	font-weight:auto;
+}
 /*상세보기:이전글,다음글*/
 .nextprev_box {width:100%; overflow:hidden; margin-top:20px; zoom:1; border-top:1px solid #e0e0e0; border-bottom:1px solid #e0e0e0; font-size:13px; }
 .nextprev_box li {float:left; width:100%; border-top:1px solid #e0e0e0; }
@@ -175,3 +179,4 @@
 .gall_cont{width:680px;margin:0 auto; border:1px solid rgb(235,240,240); background:rgb(250,250,250); padding:20px; margin-top:20px;margin-bottom:20px;}
 
  
+.pdf{padding-left:17px}
