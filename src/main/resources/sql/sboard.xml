@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+
 <mapper namespace="Sboard">
 
 	<!-- 후기 게시판 글 저장 -->
@@ -10,13 +11,12 @@
     	</selectKey>
      insert into sboard 
           (s_no, mem_no, s_sj,   s_ct, 
-           s_fl,  s_rc, s_dt,
-           s_lk)
+           s_fl,  s_rc, s_dt)
       values(#{s_no},
       (select mem_no 
     	from member
-    	where mem_id=#{mem_id}),#{s_sj},'힘들구만',
-             #{s_fl, jdbcType=VARCHAR},0,sysdate,0)
+    	where mem_id=#{mem_id}),#{s_sj},to_clob(#{s_ct}),
+             #{s_fl, jdbcType=VARCHAR},0,sysdate)
              
     </insert>
     
@@ -35,7 +35,7 @@
 		from 
 		  (select rownum rnum, s_no, mem_id,   s_sj, 
 		   s_ct, s_fl,   s_rc,
-		   s_dt,  s_lk,   S_lkno 
+		   s_dt,  s_lk,   S_lkno ,scomm_cnt
 		   from  
 	  	      (select * from sboardlist 
 	  	       order by s_no desc)
@@ -75,7 +75,7 @@
 		from 
 		  (select rownum rnum, s_no, mem_id,   s_sj, 
 		   s_ct, s_fl,      s_rc,
-		   s_dt,  s_lk,   S_lkno 
+		   s_dt,  s_lk,   S_lkno , scomm_cnt
 		   from  
 	  	      (select * from sboardlist 
 	  	      <!-- Mybatis 동적 SQL문  -->
@@ -108,7 +108,7 @@
 		from 
 		  (select rownum rnum, s_no, mem_id,   s_sj, 
 		   s_ct, s_fl,     s_rc,
-		   s_dt,  s_lk,   S_lkno 
+		   s_dt,  s_lk,   S_lkno , scomm_cnt
 		   from  
 	  	       (select * from sboardlist 
 	  	      <!-- Mybatis 동적 SQL문  -->
@@ -139,7 +139,12 @@
 	   	where rnum &gt;= ((#{page}-1) * #{limit} +1)  and rnum &lt;= (#{page} * #{limit})
 		
 	</select>    
-	
+	<!-- 코멘트 입력시 게시물의 코멘트 수 증가  -->
+	<update id="updatescommcnt" parameterType="int" >
+    	update sboard
+    		set scomm_cnt = scomm_cnt+1
+    	where s_no=#{s_no}
+    </update>
     
     <!-- 자료실 검색 결과 총 게시물 수 -->
     <!-- <select id="bbsfind_cnt1" resultClass="int" 
@@ -164,7 +169,7 @@
     
     <!-- 자료실 내용 가져오기 -->
     <select id="sboardcont" resultType="sboardbean" parameterType="int">
-      select * from sboard where s_no=#{num}
+      select * from sboardlist where s_no=#{num}
     </select>
     
     <!-- 조회수 증가 -->
@@ -175,11 +180,12 @@
     </update>
     
     <!-- 자료실 수정 -->
-    <update id="sboardedit" parameterType="java.util.Map">
-     update sbaord 
-        set mem_no=#{mem_no}, s_sj=#{bean.s_sj},
-            s_ct=#{bean.s_ct}, s_fl=#{bean.s_fl, jdbcType=VARCHAR}
-      where s_no=#{bean.s_no}
+    <update id="sboardedit" parameterType="sboardbean">
+     update sboard 
+        set s_sj=#{s_sj},
+            s_ct=#{s_ct}, 
+            s_fl=#{s_fl, jdbcType=VARCHAR}
+      where s_no=#{s_no}
     </update>
     
     <!-- 자료실 삭제 -->
@@ -188,9 +194,25 @@
       from   sboard 
       where  s_no=#{s_no}
     </delete>
-  
+  	<update id="likecountup" parameterType="java.util.Map" >
+  		update sboard 
+  		   set 
+	  	     s_lkno = s_lkno||','||to_char(#{mem_no})||',' 
+  		  ,
+  		   	   s_lk = s_lk+1
+  		 where s_no=#{s_no}
+  	</update>
+  	
+  	<!-- 스크랩 여부 확인 -->
+  	<select id="checkscrap" parameterType="int" resultType="String">
+  		select s_lkno
+  		  from sboard
+  		 where s_no=#{s_no} 
+  	</select>
+  	
     
 </mapper>
+
 
 
 

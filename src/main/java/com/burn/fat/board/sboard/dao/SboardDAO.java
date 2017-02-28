@@ -45,15 +45,11 @@ public class SboardDAO {
 	}
 
 	public void editSboard(SboardBean bean) {
-		int mem_no = sqlSession.selectOne("getmem_no",bean.getMem_id());
-		Map<String,Object> map = new HashMap<String, Object>();
-		map.put("bean", bean);
-		map.put("mem_no", mem_no);
-		sqlSession.update("sboardedit",map);
+		sqlSession.update("sboardedit",bean);
 	}
 
-	public void deleteSboard(int s_no) {
-		sqlSession.delete("sboarddelete", s_no);
+	public int deleteSboard(int s_no) {
+		return sqlSession.delete("sboarddelete", s_no);
 	}
 
 	public int getListCountSearch(Map<String, Object> m) {
@@ -64,6 +60,20 @@ public class SboardDAO {
 	public List<SboardBean> getSboardListSearch(Map<String, Object> m) {
 		List<SboardBean> list = sqlSession.selectList("sboardlistsearch",m);
 		return list;
+	}
+
+
+	public int likeCountUp(Map<String, Object> map) {
+		return sqlSession.update("likecountup", map);
+	}
+
+	public String checkscrap(int s_no) {
+		
+		return sqlSession.selectOne("checkscrap", s_no);
+	}
+
+	public void chageScommcnt(int s_no) {
+		sqlSession.update("updatescommcnt",s_no);
 	}
 
 	

@@ -10,10 +10,10 @@
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <title>BURN FAT</title>
-<link href="/fat/resource/css/login.css" rel="stylesheet" type="text/css">
-<script src="/fat/resource/js/jquery.min.js"></script>
-<script src="/fat/resource/js/angular.js"></script>
-<script src="/fat/resource/js/common.js"></script>
+<link href="/fat/resources/css/login.css" rel="stylesheet" type="text/css">
+<script src="/fat/resources/js/jquery.min.js"></script>
+<script src="/fat/resources/js/angular.js"></script>
+<script src="/fat/resources/js/common.js"></script>
 
 </head>
 

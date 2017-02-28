@@ -13,7 +13,7 @@
 			
 			<h4>글쓰기</h4>
 		
-			<form action="sboardwrite_ok.brn" method="post" enctype="multipart/form-data">
+			<form action="sboardwrite_ok.brn" method="post" enctype="multipart/form-data" id="sboardwrite">
 			<!--게시글-->
 			<div class="Board_write"> 
 				<!--제목-->
@@ -22,7 +22,7 @@
 				</div>
 				<!--정보-->
 				<div class="Editor_Area"> 
-				<textarea rows="10" cols="20" name="s_ct" id="s_ct"></textarea>
+				<textarea cols="100%" rows="20%" name="s_ct" id="s_ct"></textarea>
 				</div>
 				<!--첨부파일-->
 				<div class="file_Area">
@@ -39,11 +39,11 @@
 			<!--버튼영역-->
 			<div class="btnB_area">
 				<div class="fl">
-					<a href="boardList.jsp" class="white">취소</a>
-					<a href="boardWrite.jsp" class="white">목록</a>
+					<a href="#" onclick="javascript:history.go(-1);" class="white">취소</a>
+					<a href="sboardList.brn" class="white">목록</a>
 				</div>
 				<div class="fr">
-					<a href="#" class="black" onclick="javascript:$('form').submit()">등록</a>
+					<a href="#" class="black" onclick="write_check()">등록</a>
 				</div>
 			</div>
 			<!--//버튼영역--> 

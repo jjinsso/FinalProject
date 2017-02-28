@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ include file="/inc/subHeader.jsp"%>
-
+<% session.setAttribute("mem_id", "dang"); %>
 	<!-- container Start : 헤더와 푸터를 제외한 실제 영역-->
 	<section class="sub_container">
 
@@ -47,8 +47,8 @@
 						<c:if test="${slist !=null }">
 						<c:forEach items="${slist }" var="list">
 						<tr>
-							<td>${list.s_no }</td>
-							<td><a href="sboardcont.brn?s_no=${list.s_no}&page=${page}&state=cont">${list.s_sj }</a></td>
+							<td><c:out value="${num }" /><c:set var="num" value="${num-1}"/>	</td>
+							<td><a href="sboardcont.brn?s_no=${list.s_no}&page=${page}&state=cont">${list.s_sj }</a>[ ${list.scomm_cnt }]</td>
 							<td>${list.mem_id }</td>
 							<td>${list.s_dt }</td>
 							<td>${list.s_rc }</td>
@@ -70,89 +70,60 @@
 				<!--페이징 -->
 				<div class="paginate">
 					<p>
-					<a href="sboardlist.brn?page=1" class="pre" title="맨앞">&lt;&lt;</a>
+					<a href="sboardList.brn?page=1" class="pre" title="맨앞">&lt;&lt;</a>
 					<c:if test="${page <=1 }">
-						&lt;&nbsp;
+						<span>&lt;&nbsp;</span>
 					</c:if>
 					
 					<c:if test="${page > 1 }">
-						<a href="sboardlist.brn?page=${page-1}" class="pre" title="이전페이지">&lt;</a>&nbsp;
+						<a href="sboardList.brn?page=${page-1}" class="pre" title="이전페이지">&lt;</a>&nbsp;
 					</c:if>			
 		
 					<c:forEach var="a" begin="${startpage}" end="${endpage}">
 						<c:if test="${a == page }">
-							${a}
+							<span>${a}</span>
 						</c:if>
 						<c:if test="${a != page }">
-							<a href="sboardlist.brn?page=${a}"><strong><span>${a}</span></strong></a>&nbsp;
+							<a href="sboardList.brn?page=${a}"><strong><span>${a}</span></strong></a>&nbsp;
 						</c:if>
 					</c:forEach>			
 					
 					<c:if test="${page >= maxpage }">
-						&gt;
+						<span>&gt;</span>
 					</c:if>
 					<c:if test="${page < maxpage }">
-						<a href="sboardlist.brn?page=${page+1}">&gt;</a>
+						<a href="sboardList.brn?page=${page+1}">&gt;</a>
 					</c:if>			
-						<a href="sboardlist.brn?page=${maxpage }" class="next" title="맨뒤">&gt;&gt;</a>
+						<a href="sboardList.brn?page=${maxpage }" class="next" title="맨뒤">&gt;&gt;</a>
 					</p>
 				</div>
 			</form>
 			<!-- //form -->
 				<!--//페이징 -->	<!--검색영역-->
 			<form method="get" action="sboardfind_ok.brn"
-		  	onsubmit="return find_check()">
+		  	onsubmit="return find_check()" name="search">
 			<div class="borad_srch">
 				<!--한줄-->
 				<p class="col">
 					<label for="srch_sel01" class="sc_txt">검색영역</label>
 					<select class="w180 mr10" id="srch_sel01" name="find_field">
+							<option value="">검색할 항목을 선택하세요</option>
 							<option value="mem_id">작성자</option>
 					       <option value="s_sj">글제목</option>
 					       <option value="s_ct">글내용</option>
 					</select>
 					<label for="srch_txt" class="dnone"></label><input type="text" name="find_name" id="srch_txt" class="w280 mr10" value="검색어를 입력하세요"/>
 					<input type="submit" class="btn_srch" value="검색" />
+					<!--//검색영역-->
+					<select id="viewcount" name="limit">
+						<option value="20">20줄보기</option>
+						<option value="50">50줄보기</option>
+						<option value="100">100줄보기</option>
+					</select> 
 				</p>
 				<!--한줄-->
 			</div>
 			</form>
-			<!--//검색영역-->
-			<script>
-			$(function(){
-				
-				$("#viewcount").val("${limit}").prop("selected", true);
-				
-				$('#viewcount').change(function(){
-					var limit = $('#viewcount option:selected').val();
-					   $.ajax({
-						   type: "post",
-						   data : {"limit" : limit},
-						   url : "sboardList.brn",
-						   cache : false,
-						   success : function(data){
-							   $('body').html(data);
-							   $('body > meta').remove();
-							   $('body > title').remove();
-							   $('body > link').remove();
-							   $('body > script').remove();
-							   
-						   },
-						   error : function(data, status){
-							   alert('limit')
-						   },
-						   headers : {"cache-control": "no-cache","pragma": "no-cache"}
-					   })
-				})
-			})
-			</script>
-			<div id="sboardview" style="padding-left: 300px;">
-			<select id="viewcount">
-				<option value="20">20줄보기</option>
-				<option value="50">50줄보기</option>
-				<option value="100">100줄보기</option>
-			</select> 
-			</div>
 			<div class="btnB_area">
 				<div class="fr">
 					<a href="./sboardWrite.brn" class="black">글쓰기</a>
@@ -160,6 +131,7 @@
 			</div>
 		</div>
 		<!-- 서브컨텐츠 영역 END -->
+		
 	</section>
 	<!-- // container End -->
 

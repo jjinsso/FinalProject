@@ -10,11 +10,11 @@
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <title>Burn Fat</title>
-<link href="/fat/resource/css/sub.css" rel="stylesheet" type="text/css">
-<script src="/fat/resource/js/jquery.min.js"></script>
-<script src="/fat/resource/js/angular.js"></script>
-<script src="/fat/resource/js/common.js"></script>
-<script src="./resource/js/sboardlist.js"></script>
+<link href="/fat/resources/css/sub.css" rel="stylesheet" type="text/css">
+<script src="/fat/resources/js/jquery.min.js"></script>
+<script src="/fat/resources/js/angular.js"></script>
+<script src="/fat/resources/js/common.js"></script>
+<script src="./resources/js/sboard.js"></script>
 
 </head>
 

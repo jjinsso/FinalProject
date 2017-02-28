@@ -2,11 +2,14 @@ package com.burn.fat.board.sboard.action;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,7 +23,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.burn.fat.board.sboard.dao.SboardService;
+import com.burn.fat.board.sboard.dao.ScommService;
 import com.burn.fat.board.sboard.model.SboardBean;
+import com.burn.fat.board.sboard.model.ScommBean;
 import com.oreilly.servlet.MultipartRequest;
 
 @Controller("sboard")
@@ -28,6 +33,8 @@ public class SboardAction {
 	
 	@Autowired
 	private SboardService service;
+	@Autowired
+	private ScommService scommservice;
 	private String saveFolder = "C:/upload";
 	
 	@RequestMapping(value="/sboardWrite.brn")
@@ -55,9 +62,12 @@ public class SboardAction {
 		HttpSession session = request.getSession();
 		PrintWriter out = response.getWriter();
 		String mem_id=(String) session.getAttribute("mem_id");
-		if(mem_id==null)
-			out.print("<script>alert('로그인 후 이용할 수 있습니다.')</script>");
-		
+		if(mem_id==null){
+			out.print("<script>alert('로그인 후 이용할 수 있습니다.');");
+			out.print(" history.back()</script>");
+			
+			return null;
+		}
 		
 		String s_sj=multi.getParameter("s_sj").trim();
 		String s_ct= multi.getParameter("s_ct").trim();
@@ -122,10 +132,9 @@ public class SboardAction {
 	}
 	
 	@RequestMapping("/sboardList.brn")
-	public ModelAndView sboardList(HttpServletRequest request, HttpServletResponse response)throws Exception{
+	public ModelAndView sboardList(HttpServletRequest request, HttpServletResponse response, @RequestParam(value="limit" ,defaultValue="20") int limit)throws Exception{
 	    
 			int page = 1;
-	 		int limit=20; // 목록보기 초기값
 	 		HttpSession session = request.getSession();
 
 	 		if(request.getParameter("page") != null){
@@ -159,9 +168,7 @@ public class SboardAction {
 			m.put("page", page);
 			m.put("limit", limit);
 			
-					
 			List<SboardBean> slist = service.getSboardList(m); 
-
 				ModelAndView model=new ModelAndView("sboard/sboardList");
 				model.addObject("page", page);
 				model.addObject("limit", limit);
@@ -171,6 +178,37 @@ public class SboardAction {
 				model.addObject("listcount", listcount);
 				model.addObject("slist", slist);
 				return model;	
+	}
+	@RequestMapping(value="/sboardscrap.brn")
+	public void sboardscrap(HttpServletRequest request,
+			HttpServletResponse response, @RequestParam(value="s_no", required=true) int s_no)throws Exception{
+		
+		HttpSession session = request.getSession();
+		String mem_no = (String) session.getAttribute("mem_no");
+		mem_no="2";
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("s_no", s_no);
+		map.put("mem_no", mem_no);
+		int check=0;
+		String s_lkno = service.checkscrap(s_no);
+		if(s_lkno!=null){
+			StringTokenizer token = new StringTokenizer(s_lkno, ",");
+			while(token.hasMoreTokens()){
+				if(token.nextToken().equals(mem_no)){
+					check=1;
+				}
+			}
+			System.out.println("1."+s_lkno);
+		}else{
+			System.out.println("s_lkno is null");
+		}
+		int result = 0;
+		if(check !=1 ){
+			result = service.likeCountUp(map);
+			System.out.println(result);
+		}
+		PrintWriter out = response.getWriter();
+		out.print(result);
 	}
 	
 	/* 자료실 내용보기, 수정폼, 삭제폼*/
@@ -188,10 +226,21 @@ public class SboardAction {
 		String state=request.getParameter("state");//구분 필드		
 		
 		
+		ModelAndView contM=new ModelAndView();
 		//번호를 기준으로 DB 내용을 가져옵니다.
 		SboardBean bean=this.service.getSboardCont(s_no);
+	/*	if(s_no!=1){*/
+			SboardBean beanpre = service.getSboardCont(s_no-1);
+			contM.addObject("beanpre",beanpre);
+		/*}*/
+		SboardBean beannext = service.getSboardCont(s_no+1);
+		contM.addObject("beannext",beannext);
 		
-		ModelAndView contM=new ModelAndView();
+		if(bean==null){
+			PrintWriter out =response.getWriter();
+			out.print("<script>alert('존재하지 않는 게시물입니다.'); history.back();</script>");
+			return null;
+		}else{
 		
 		if(state.equals("cont")){//내용보기
 			service.sboardHit(s_no);//조회수 증가
@@ -206,9 +255,13 @@ public class SboardAction {
 		}else if(state.equals("del")){//삭제일때
 			contM.setViewName("sboard/sboard");
 		}
+		List<ScommBean> beanlist = new ArrayList<ScommBean>();
+		beanlist = scommservice.getCommList(s_no);
+		contM.addObject("beanlist",beanlist);
 		contM.addObject("sbean",bean);
 		contM.addObject("page",page);
 		return contM;
+		}
 	}
 	
 	/* 자료실 수정 */
@@ -237,12 +290,7 @@ public class SboardAction {
 		//디비로 부터 내용을 가져옴
 		SboardBean bcont=this.service.getSboardCont(s_no);
 		
-		if(!bcont.getMem_id().equals(mem_id)){//작성자가 아니라면
-			out.println("<script>");
-			out.println("alert('삭제할 권한이 없습니다.')");
-			out.println("history.back()");
-			out.println("</script>");
-		}else{
+	
 		   File UpFile=multi.getFile("s_fl");
 		   if(UpFile != null){//첨부한 이진파일이 있다면
 			   String fileName=UpFile.getName();//첨부한 이진파일명 저장
@@ -284,14 +332,14 @@ public class SboardAction {
 		   
 		 //get방식으로 3개의 파라미터 값이 넘어갑니다.
           response.sendRedirect(
-        		"sboardView.brn?state=cont&page="+page+"&num="+s_no);
-		}		
+        		"sboardcont.brn?state=cont&page="+page+"&s_no="+s_no);
+				
 		return null;
 	}
 	
 	/* 자료실 삭제 */
 	@RequestMapping(value="/sboarddelete_ok.brn",method=RequestMethod.POST)
-	public ModelAndView sboardDelete_ok(
+	public void sboardDelete_ok(
 			HttpServletRequest request,
 			HttpServletResponse response) throws Exception{
 		response.setContentType("text/html;charset=UTF-8");
@@ -299,8 +347,6 @@ public class SboardAction {
 		
 		int s_no=Integer.parseInt(request.getParameter("s_no"));
 		int page=Integer.parseInt(request.getParameter("page"));
-		HttpSession session = request.getSession();
-		String mem_id=(String) session.getAttribute("mem_id");
 		
 		//글번호에 해당하는 디비 내용을 가져옵니다.
 		SboardBean bean=this.service.getSboardCont(s_no);
@@ -308,20 +354,12 @@ public class SboardAction {
 		//기존 파일명 가져옵니다.
 		String fname=bean.getS_fl();
 		
-		if(!bean.getMem_id().equals(mem_id)){//글 작성자가 아니라면
-			out.println("<script>");
-			out.println("alert('삭제할 권한이 없습니다.')");
-			out.println("history.back()");
-			out.println("</script>");
-		}else{//비번이 같다면
 			if(fname != null){//기존 이진파일이 존재한다면
 				File file=new File(saveFolder+fname);
 				file.delete();//서버 폴더로 부터 기존 이진파일 삭제합니다.
 			}
-			this.service.deleteSboard(s_no);//디비로 부터 레코드 삭제합니다.
-			response.sendRedirect("sboardlist.brn?page="+page);
-		}
-		return null;
+			int check=this.service.deleteSboard(s_no);//디비로 부터 레코드 삭제합니다.
+			out.print(check);
 	}
 	
 	/* sever.xml 한글 처리 인코딩 설정 - get 방식 적용
@@ -331,11 +369,10 @@ public class SboardAction {
 	@RequestMapping(value="/sboardfind_ok.brn", method=RequestMethod.GET)
 	public ModelAndView sboardfind_ok(
 			HttpServletRequest request,
-			HttpServletResponse response
+			HttpServletResponse response, @RequestParam(value="limit", defaultValue="20") int limit
 			) throws Exception{
 		    
 		  	int page=1;
-			int limit=20;
 			
 			if(request.getParameter("page")!=null){
 				page=Integer.parseInt(request.getParameter("page"));
@@ -378,7 +415,8 @@ public class SboardAction {
 			 
 			List<SboardBean> slist = service.getSboardListSearch(m); 
 			
-			ModelAndView model=new ModelAndView("sboard/sboardfind");
+			ModelAndView model=new ModelAndView("sboard/sboardList");
+			model.addObject("limit",limit);
 			model.addObject("find_name",find_name);
 			model.addObject("find_field",find_field);			
 			model.addObject("page", page);

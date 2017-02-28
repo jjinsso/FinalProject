@@ -21,6 +21,7 @@ create table member(
 )
 
 insert into member values(1, 'dang','1234','문가형',2,sysdate,'01085884166',null,16910,null,null,null,null,null,null,null,null,null,null);
+insert into member values(2, 'mimi','1234','냠냠이',1,sysdate,'01098751541',null,16910,null,null,null,null,null,null,null,null,null,null);
 create table fboard(
 	f_no		number constraint fb_fno_PK primary key,--�۹�ȣ
 	mem_no		number,--�ۼ��� ȸ�� ��ȣ

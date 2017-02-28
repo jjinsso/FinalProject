@@ -16,6 +16,8 @@ public class SboardBean {
 	private Date s_dt;
 	private int s_lk;
 	private String s_lkno;
+	private int scomm_cnt;
+	
 	public int getS_no() {
 		return s_no;
 	}
@@ -69,6 +71,12 @@ public class SboardBean {
 	}
 	public void setS_lkno(String s_lkno) {
 		this.s_lkno = s_lkno;
+	}
+	public int getScomm_cnt() {
+		return scomm_cnt;
+	}
+	public void setScomm_cnt(int scomm_cnt) {
+		this.scomm_cnt = scomm_cnt;
 	}
 	
 	

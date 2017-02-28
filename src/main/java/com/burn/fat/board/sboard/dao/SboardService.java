@@ -42,8 +42,8 @@ public class SboardService {
 		
 	}
 
-	public void deleteSboard(int s_no) {
-		dao.deleteSboard(s_no);
+	public int deleteSboard(int s_no) {
+		return dao.deleteSboard(s_no);
 	}
 
 	public int getListCountSearch(Map<String, Object> m) {
@@ -54,6 +54,20 @@ public class SboardService {
 	public List<SboardBean> getSboardListSearch(Map<String, Object> m) {
 		
 		return dao.getSboardListSearch(m);
+	}
+
+
+	public int likeCountUp(Map<String, Object> map) {
+		return dao.likeCountUp(map);
+	}
+
+	public String checkscrap(int s_no) {
+		
+		return dao.checkscrap(s_no);
+	}
+
+	public void changeScommcnt(int s_no) {
+		dao.chageScommcnt(s_no);
 	}
 
 
